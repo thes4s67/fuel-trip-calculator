@@ -3,13 +3,27 @@ import axios from "axios";
 import { baseUrl } from "../../utils/API";
 import { getFuelType, getAdjMPG } from "../../utils";
 
+export const getIPAddress = createAsyncThunk(
+  "mapData/getIPAddress",
+  async (arg, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`http://www.geoplugin.net/json.gp?ip=`);
+      return data;
+    } catch (err) {
+      rejectWithValue(err.response.data);
+    }
+  }
+);
 export const getSuggestionData = createAsyncThunk(
   "mapData/getSuggestionData",
   async (arg, { rejectWithValue }) => {
     try {
+      console.log(arg, "args suggestionData");
       const { data } = await axios.post(`${baseUrl}/api/suggest`, {
         address: arg.address,
         idx: arg.idx,
+        long: arg.long,
+        lat: arg.lat,
       });
       return data;
     } catch (err) {
@@ -21,7 +35,6 @@ export const getFuelData = createAsyncThunk(
   "mapData/getFuelData",
   async (arg, { rejectWithValue }) => {
     try {
-      console.log(arg, "arg data");
       const { data } = await axios.post(`${baseUrl}/api/fuel`, {
         addresses: arg,
       });
@@ -120,8 +133,13 @@ export const mapDataSlice = createSlice({
       cityDriving: 55,
     },
     suggestions: {
+      default: { long: null, lat: null, ipAddress: null },
       start: { loading: false, suggestion: [], value: null },
-      destination: { loading: false, suggestion: [], value: null },
+      destination: {
+        loading: false,
+        suggestion: [],
+        value: null,
+      },
     },
     selectOptions: {
       makes: [],
@@ -141,9 +159,9 @@ export const mapDataSlice = createSlice({
       trim: null,
       city08: null,
       highway08: null,
-      fuelType: null,
+      fuel_type: null,
       comb08: null,
-      minTankSize: null,
+      fuel_tank_size: null,
       thumbnail: null,
     },
     fuelData: {
@@ -185,6 +203,7 @@ export const mapDataSlice = createSlice({
       } else {
         state.suggestions.destination.value = param.payload;
       }
+      console.log(param, "params", state);
     },
     updateSelection: (state, param) => {
       switch (param.payload.type) {
@@ -275,7 +294,6 @@ export const mapDataSlice = createSlice({
       //do something /w state
     },
     [getSelectionData.fulfilled]: (state, { payload }) => {
-      console.log(payload, "this the selectionData payload");
       state.selectionData = payload.data;
     },
     [getSelectionData.rejected]: (state, { payload }) => {
@@ -287,7 +305,9 @@ export const mapDataSlice = createSlice({
     [getTripData.fulfilled]: (state, { payload }) => {
       state.trip = {
         path: payload.data.features[0].geometry.coordinates,
-        distance: payload.data.features[0].properties.summary.distance,
+        distance: Math.ceil(
+          payload.data.features[0].properties.summary.distance
+        ),
         directions: payload.data.features[0].properties.segments[0].steps,
         duration: payload.data.features[0].properties.summary.duration,
       };
@@ -299,8 +319,6 @@ export const mapDataSlice = createSlice({
       state.loading = true;
     },
     [getFuelData.fulfilled]: (state, { payload }) => {
-      console.log(state, "beforeState");
-      console.log("its here first... baby", state.selectionData.fuel_type);
       state.fuelData = payload.data;
       state.loading = false;
       state.tripAdjData = {
@@ -308,7 +326,6 @@ export const mapDataSlice = createSlice({
         fuel_type: getFuelType(state.selectionData.fuel_type),
         adjMPG: state.selectionData.comb08,
       };
-      console.log(state, "finalState");
     },
     [getFuelData.rejected]: (state, { payload }) => {
       //do something /w state
@@ -327,6 +344,7 @@ export const mapDataSlice = createSlice({
       }
     },
     [getSuggestionData.fulfilled]: (state, { payload }) => {
+      console.log(payload, "suggestionData payload");
       if (payload.idx === 0) {
         state.suggestions = {
           ...state.suggestions,
@@ -335,7 +353,8 @@ export const mapDataSlice = createSlice({
             loading: false,
             suggestion: payload.data.features.map((c) => {
               return {
-                label: `${c.properties.label}`,
+                label: c.properties.label,
+                region: c.properties.region,
                 coordinates: c.geometry.coordinates,
               };
             }),
@@ -351,6 +370,7 @@ export const mapDataSlice = createSlice({
               return {
                 label: `${c.properties.label}`,
                 coordinates: c.geometry.coordinates,
+                region: c.properties.region,
               };
             }),
           },
@@ -360,6 +380,19 @@ export const mapDataSlice = createSlice({
     [getSuggestionData.rejected]: (state, { payload }) => {
       //do something /w state
       console.log("something bad happened on address suggestion");
+    },
+    [getIPAddress.pending]: (state, { meta }) => {},
+    [getIPAddress.fulfilled]: (state, { payload }) => {
+      state.suggestions.default = {
+        long: payload.geoplugin_longitude,
+        lat: payload.geoplugin_latitude,
+        ipAddress: payload.geoplugin_request,
+      };
+      // default: { long: null, lat: null, ipAddress: null },
+    },
+    [getIPAddress.rejected]: (state, { meta }) => {
+      //do something /w state
+      console.log(meta, "rejected ip address");
     },
   },
 });

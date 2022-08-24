@@ -6,9 +6,10 @@ const handler = async (req, res) => {
       "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
       {
         coordinates: req.body.addresses.map((c) => c.coordinates),
-        preference: "shortest",
+        preference: "fastest",
         units: "mi",
         geometry: true,
+        maximum_speed: 100,
       },
       {
         headers: {

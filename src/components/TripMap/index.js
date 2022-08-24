@@ -12,15 +12,15 @@ const TripMap = () => {
     <Card sx={{ p: 2 }}>
       <Map
         height={274}
-        defaultCenter={
+        center={
           addresses.start.value
             ? [
                 addresses.start.value.coordinates[1],
                 addresses.start.value.coordinates[0],
               ]
-            : [33.67, -117.78]
+            : [addresses.default.lat, addresses.default.long]
         }
-        defaultZoom={14}
+        zoom={14}
         provider={osm}
       >
         <ZoomControl />

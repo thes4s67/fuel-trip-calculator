@@ -14,13 +14,18 @@ const InputCounter = () => {
   const dispatch = useDispatch();
   return (
     <TextField
-      style={{ fontSize: "20px", textTransform: "uppercase", fontWeight: 700 }}
-      // width={20}
       type="number"
       size="small"
       variant="standard"
       value={tripAdjData.cityDriving}
       InputProps={{
+        style: {
+          fontSize: 20,
+          fontWeight: 700,
+          textAlign: "center",
+          justifyContent: "center",
+          alignItems: "center",
+        },
         inputProps: { min: 0, max: 100 },
         endAdornment: <InputAdornment position="end">%</InputAdornment>,
       }}
@@ -35,9 +40,6 @@ const InputCounter = () => {
           );
         }
       }}
-      //   InputLabelProps={{
-      //     shrink: true,
-      //   }}
     />
   );
 };

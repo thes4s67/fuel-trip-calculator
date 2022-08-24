@@ -64,18 +64,41 @@ const AddressSelector = () => {
         updateAddress({
           address: newVal.label,
           coordinates: newVal.coordinates,
+          region: newVal.region,
           idx,
         })
       );
     } else if (reason === "clear") {
-      //TODO:
+      dispatch(
+        updateAddress({
+          address: null,
+          coordinates: null,
+          region: null,
+          idx,
+        })
+      );
     } else if (reason === "removeOption") {
-      //TODO:
+      dispatch(
+        updateAddress({
+          address: null,
+          coordinates: null,
+          region: null,
+          idx,
+        })
+      );
     }
   };
 
   const handleAddressChange = async (e, idx) => {
-    dispatch(getSuggestionData({ address: e.target.value, idx }));
+    console.log(idx, suggestions.default.long, suggestions.default.lat);
+    dispatch(
+      getSuggestionData({
+        address: e.target.value,
+        idx,
+        long: suggestions.default.long,
+        lat: suggestions.default.lat,
+      })
+    );
   };
 
   const debounceHandler = useCallback(_.debounce(handleAddressChange, 500), []);
@@ -157,7 +180,7 @@ const AddressSelector = () => {
                 alignItems: "center",
               }}
             >
-              <Avatar sx={{ bgcolor: "#000", mr: 2 }}>B</Avatar>
+              <Avatar sx={{ bgcolor: "#000", mr: 2, mt: 2 }}>B</Avatar>
               <Autocomplete
                 loading={suggestions.destination.loading}
                 disablePortal

@@ -1,5 +1,5 @@
 import { Typography, Avatar, Box, useTheme } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import InputSelect from "../InputSelect";
 import InputSlider from "../InputCounter";
 import {
@@ -9,6 +9,7 @@ import {
   getFuelCost,
 } from "../../utils";
 import LightbulbCircleIcon from "@mui/icons-material/LightbulbCircle";
+import BoldText from "../BoldText";
 
 const TripDetails = () => {
   const selectionData = useSelector((state) => state.mapData.selectionData);
@@ -41,68 +42,103 @@ const TripDetails = () => {
           About Your Trip
         </Typography>
       </Box>
-      <Typography
-        variant="h6"
-        sx={{ textTransform: "uppercase", fontWeight: 450 }}
-      >
-        Your {selectionData.year} {selectionData.make} {selectionData.model} can
-        hold about {selectionData.fuel_tank_size} gallons of gas and has an
-        approximate range of{" "}
-        {selectionData.comb08 * selectionData.fuel_tank_size} miles. It can get
-        an average of {selectionData.city08} MPG driving in the city, an average
-        of {selectionData.highway08} MPG driving on the highway with a combined
-        of about {selectionData.comb08} MPG. The preferred fuel type for your
-        car is {getFuelText(selectionData.fuel_type)}. If you were to pump
-        {<InputSelect type={"FuelType"} />}{" "}
-        {tripAdjData.fuel_type === 4 ? "fuel" : "gasolines"}, you will be
-        looking at an average of{" "}
-        {fuelData.startAvg[tripAdjData.fuel_type - 1].toFixed(2)} per gallon at
-        your starting point or{" "}
-        {fuelData.endAvg[tripAdjData.fuel_type - 1].toFixed(2)} per gallon at
-        your destination.
-        <br />
-        <br />
-        You can expect to pay between{" "}
-        {fuelData.startMin[tripAdjData.fuel_type - 1]} to{" "}
-        {fuelData.startMax[tripAdjData.fuel_type - 1]} per gallon at your
-        starting point and between {fuelData.endMin[tripAdjData.fuel_type - 1]}{" "}
-        to {fuelData.endMax[tripAdjData.fuel_type - 1]} per gallon at your
-        destination.
-        <br />
-        <br />
-        From your starting point to your destination, the distance is about{" "}
-        {Math.round(tripData.distance)} miles and will take you about{" "}
-        {formatDuration(tripData.duration)} to get there. If you were to drive{" "}
-        {<InputSlider />} of your trip in the city, your adjusted MPG would be{" "}
-        {Number(tripAdjData.adjMPG).toFixed(2)} and the total fuel cost for your
-        trip will be between $
-        {getFuelCost(
-          tripData.distance,
-          tripAdjData.adjMPG,
-          fuelData.startMin[tripAdjData.fuel_type - 1]
-        )}
-        -
-        {getFuelCost(
-          tripData.distance,
-          tripAdjData.adjMPG,
-          fuelData.startMax[tripAdjData.fuelType - 1]
-        )}{" "}
-        or about $
-        {getFuelCost(
-          tripData.distance,
-          tripAdjData.adjMPG,
-          fuelData.startAvg[tripAdjData.fuelType - 1]
-        )}{" "}
-        on average. If you start with a {<InputSelect type={"TankSize"} />} tank
-        of gas,{" "}
-        {getPumpCount(
-          tripAdjData.fuelTankSize,
-          selectionData.minTankSize,
-          tripData.distance,
-          tripAdjData.adjMPG
-        )}
-        .
-      </Typography>
+      <Box>
+        <Typography
+          variant="h6"
+          sx={{ textTransform: "uppercase", fontWeight: 450 }}
+        >
+          Your{" "}
+          <BoldText>
+            {selectionData.year} {selectionData.make} {selectionData.model}
+          </BoldText>{" "}
+          can hold about <BoldText>{selectionData.fuel_tank_size}</BoldText>{" "}
+          gallons of gas and has an approximate range of{" "}
+          <BoldText>
+            {selectionData.comb08 * selectionData.fuel_tank_size} miles
+          </BoldText>
+          {". "}It can get an average of{" "}
+          <BoldText>{selectionData.city08} MPG</BoldText> driving in the city,
+          an average of <BoldText>{selectionData.highway08} MPG</BoldText>{" "}
+          driving on the highway with a combined of about{" "}
+          <BoldText>{selectionData.comb08} MPG</BoldText>.
+          <br/>
+          <br/>
+          The preferred fuel type for your car is{" "}
+          <BoldText>{getFuelText(selectionData.fuel_type)}</BoldText>. If you
+          were to pump
+          {<InputSelect type={"FuelType"} />}{" "}
+          {tripAdjData.fuel_type === 4 ? "fuel" : "gasoline"}, you will be
+          looking at an average of{" "}
+          {
+            <BoldText>
+              ${fuelData.startAvg[tripAdjData.fuel_type - 1].toFixed(2)}
+            </BoldText>
+          }{" "}
+          per gallon at your starting point or{" "}
+          <BoldText>
+            ${fuelData.endAvg[tripAdjData.fuel_type - 1].toFixed(2)}
+          </BoldText>{" "}
+          per gallon at your destination.
+          <br />
+          <br />
+          You can expect to pay between{" "}
+          <BoldText>
+            ${fuelData.startMin[tripAdjData.fuel_type - 1]}
+          </BoldText> to{" "}
+          <BoldText>${fuelData.startMax[tripAdjData.fuel_type - 1]}</BoldText>{" "}
+          per gallon at your starting point and between{" "}
+          <BoldText>${fuelData.endMin[tripAdjData.fuel_type - 1]}</BoldText> to{" "}
+          <BoldText>${fuelData.endMax[tripAdjData.fuel_type - 1]}</BoldText> per
+          gallon at your destination.
+          <br />
+          <br />
+          From your starting point to your destination, the distance is about{" "}
+          <BoldText>{Math.round(tripData.distance)} miles</BoldText> and will
+          take you about{" "}
+          <BoldText>{formatDuration(tripData.duration)}</BoldText> to get there.
+          If you were to drive {<InputSlider />} of your trip in the city, your
+          adjusted MPG would be{" "}
+          <BoldText>{Number(tripAdjData.adjMPG).toFixed(2)}</BoldText> and the
+          total fuel cost for your trip will be between{" "}
+          <BoldText>
+            $
+            {getFuelCost(
+              tripData.distance,
+              tripAdjData.adjMPG,
+              fuelData.startMin[tripAdjData.fuel_type - 1]
+            )}
+          </BoldText>
+          {" "}to{" "}
+          <BoldText>
+            ${getFuelCost(
+              tripData.distance,
+              tripAdjData.adjMPG,
+              fuelData.startMax[tripAdjData.fuel_type - 1]
+            )}
+          </BoldText>{" "}
+          or about{" "}
+          <BoldText>
+            $
+            {getFuelCost(
+              tripData.distance,
+              tripAdjData.adjMPG,
+              fuelData.startAvg[tripAdjData.fuel_type - 1]
+            )}
+          </BoldText>{" "}
+          on average. If you start with a {<InputSelect type={"TankSize"} />}{" "}
+          tank of gas,{" "}
+          <BoldText>
+            {" "}
+            {getPumpCount(
+              tripAdjData.fuel_tank_size,
+              selectionData.fuel_tank_size,
+              tripData.distance,
+              tripAdjData.adjMPG
+            )}
+          </BoldText>
+          .
+        </Typography>
+      </Box>
     </>
   );
 };

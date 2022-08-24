@@ -7,30 +7,22 @@ const handler = async (req, res) => {
         req.body.addresses[0],
         "Regular"
       );
-      console.log(1);
       const startMidgrade = await getAvgGasPrice(
         req.body.addresses[0],
         "Midgrade"
       );
-      console.log(2);
       const startPremium = await getAvgGasPrice(
         req.body.addresses[0],
         "Premium"
       );
-      console.log(3);
       const startDiesel = await getAvgGasPrice(req.body.addresses[0], "Diesel");
-      console.log(4);
       const endRegular = await getAvgGasPrice(req.body.addresses[1], "Regular");
-      console.log(5);
       const endMidgrade = await getAvgGasPrice(
         req.body.addresses[1],
         "Midgrade"
       );
-      console.log(6);
       const endPremium = await getAvgGasPrice(req.body.addresses[1], "Premium");
-      console.log(7);
       const endDiesel = await getAvgGasPrice(req.body.addresses[1], "Diesel");
-      console.log(8);
       res.status(200).json({
         success: true,
         data: {
@@ -73,6 +65,7 @@ const handler = async (req, res) => {
         },
       });
     } catch (err) {
+      console.log(err);
       res.status(403).json({ error: "unable to retrieve gas prices" });
     }
   } else {

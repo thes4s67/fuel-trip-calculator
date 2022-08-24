@@ -62,7 +62,7 @@ const handler = async (req, res) => {
         break;
       case "sData":
         data = await selectQuery(
-          `select year, make, model, trim, city08, highway08, comb08, fuel_type, min_tank_size, thumbnail from model_specs where year = ${req.body.year} and make = '${req.body.make}' and model = '${req.body.model}' and trim = '${req.body.trim}';`
+          `select year, make, model, trim, city08, highway08, comb08, fuel_type, fuel_tank_size, thumbnail from model_specs where year = ${req.body.year} and make = '${req.body.make}' and model = '${req.body.model}' and trim = '${req.body.trim}';`
         );
         res.status(200).json({
           success: true,

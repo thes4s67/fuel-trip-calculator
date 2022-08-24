@@ -18,6 +18,7 @@ import {
   getOptionModels,
   getOptionTrims,
   getSelectionData,
+  getIPAddress,
 } from "../src/store/slices/mapDataSlice";
 import { baseUrl } from "../src/utils/API";
 import TripMap from "../src/components/TripMap";
@@ -115,26 +116,17 @@ const TabsContainerWrapper = styled(Box)(
 const Home = ({ data }) => {
   const selection = useSelector((state) => state.mapData.selection);
   const tripData = useSelector((state) => state.mapData.trip);
-  // const selectOptions = useSelector((state) => state.mapData.selectOptions);
+  const suggestions = useSelector((state) => state.mapData.suggestions);
 
   const fuelData = useSelector((state) => state.mapData.fuelData);
   const loading = useSelector((state) => state.mapData.loading);
-  // const theme = useTheme();
-  // const [search, setSearch] = useState({ start: false, destination: false });
 
-  // const [suggestStart, setSuggestStart] = useState([]);
-  // const [suggestEnd, setSuggestEnd] = useState([]);
-  const [addresses, setAddresses] = useState([]);
-  // const [tripData, setTripData] = useState({
-  //   path: [],
-  //   distance: "",
-  //   directions: [],
-  //   duration: "",
-  // });
   const [currTab, setCurrTab] = useState("overview");
   const dispatch = useDispatch();
   useEffect(() => {
-    //TODO: need to consider if user starts changing options after everything is initally selected
+    if (suggestions.default.ipAddress === null) {
+      dispatch(getIPAddress());
+    }
     //Get Makes
     if (
       selection.year.value !== null &&
@@ -180,7 +172,7 @@ const Home = ({ data }) => {
         })
       );
     }
-  }, [addresses, selection]);
+  }, [selection, suggestions.default]);
 
   const tabs = [
     { value: "overview", label: "Overview" },
@@ -205,7 +197,7 @@ const Home = ({ data }) => {
         </Grid>
         <Grid item xs={12} md={7}>
           <Box sx={{ justifyContent: "center" }}>
-            <TripMap addresses={addresses} />
+            <TripMap />
           </Box>
         </Grid>
         {loading ? (
@@ -213,7 +205,7 @@ const Home = ({ data }) => {
             <Loading />
           </Grid>
         ) : null}
-        {fuelData.startAvg.length > 0 ? (
+        {fuelData.startAvg.length && !loading > 0 ? (
           <>
             <Grid item xs={12}>
               <TabsContainerWrapper>

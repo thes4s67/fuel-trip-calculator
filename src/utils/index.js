@@ -3,20 +3,16 @@ import _ from "lodash";
 import moment from "moment";
 
 export const getAdjMPG = (city, highway, cityPercent) => {
-  console.log(city, highway, cityPercent);
-  console.log(city * cityPercent + highway * (1 - cityPercent));
   return city * cityPercent + highway * (1 - cityPercent);
 };
 export const formatDuration = (duration) => {
-  console.log(duration, "duration");
-  const time = moment
-    .utc(duration * 1000)
-    .format("HH:mm")
-    .split(":");
-  return `${time[0]} hours and ${time[1]} minutes`;
+  const d = moment.duration(duration, "seconds");
+  const hh =
+    d._data.days > 0 ? d._data.days * 24 + d_.data.hours : d._data.hours;
+  return `${hh} hours, ${d._data.minutes} minutes`;
 };
 
-export const getFuelCost = (distance, combined, avg) => {
+export const getFuelCost = (distance, combined, avg, fuelData, fuelType) => {
   return ((Math.round(distance) / combined) * avg).toFixed(2);
 };
 

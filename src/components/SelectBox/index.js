@@ -15,7 +15,7 @@ const SelectBox = ({ type, label, options, width, setStatus }) => {
         <Select
           key={`${type}-1`}
           disabled={disabled}
-          value={selection[type].value}
+          value={selection[type].value || ""}
           onChange={(e) => {
             dispatch(updateSelection({ value: e.target.value, type }));
           }}
