@@ -7,7 +7,7 @@ export const getIPAddress = createAsyncThunk(
   "mapData/getIPAddress",
   async (arg, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`http://www.geoplugin.net/json.gp?ip=`);
+      const { data } = await axios.get(`https://www.iplocate.io/api/lookup/`);
       return data;
     } catch (err) {
       rejectWithValue(err.response.data);
@@ -378,17 +378,15 @@ export const mapDataSlice = createSlice({
       }
     },
     [getSuggestionData.rejected]: (state, { payload }) => {
-      //do something /w state
       console.log("something bad happened on address suggestion");
     },
     [getIPAddress.pending]: (state, { meta }) => {},
     [getIPAddress.fulfilled]: (state, { payload }) => {
       state.suggestions.default = {
-        long: payload.geoplugin_longitude,
-        lat: payload.geoplugin_latitude,
-        ipAddress: payload.geoplugin_request,
+        long: payload.longitude,
+        lat: payload.latitude,
+        ipAddress: payload.ipAddress,
       };
-      // default: { long: null, lat: null, ipAddress: null },
     },
     [getIPAddress.rejected]: (state, { meta }) => {
       //do something /w state
