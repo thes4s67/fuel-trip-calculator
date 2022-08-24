@@ -2,6 +2,14 @@ import axios from "axios";
 import _ from "lodash";
 import moment from "moment";
 
+export const adjustZoom = (trip) => {
+  //TODO:
+  if (trip.distance !== "") {
+    return 15;
+  }
+  return 10;
+};
+
 export const getAdjMPG = (city, highway, cityPercent) => {
   return city * cityPercent + highway * (1 - cityPercent);
 };
@@ -12,7 +20,7 @@ export const formatDuration = (duration) => {
   return `${hh} hours, ${d._data.minutes} minutes`;
 };
 
-export const getFuelCost = (distance, combined, avg, fuelData, fuelType) => {
+export const getFuelCost = (distance, combined, avg) => {
   return ((Math.round(distance) / combined) * avg).toFixed(2);
 };
 

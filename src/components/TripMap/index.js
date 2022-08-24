@@ -4,10 +4,12 @@ import { osm } from "pigeon-maps/providers";
 import CustomMarker from "../Map/CustomMarker";
 import Lines from "../Map/Lines";
 import { useSelector } from "react-redux";
+import { adjustZoom } from "../../utils";
 
 const TripMap = () => {
   const path = useSelector((state) => state.mapData.trip.path);
   const addresses = useSelector((state) => state.mapData.suggestions);
+  const trip = useSelector((state) => state.mapData.trip);
   return (
     <Card sx={{ p: 2 }}>
       <Map
@@ -20,7 +22,7 @@ const TripMap = () => {
               ]
             : [addresses.default.lat, addresses.default.long]
         }
-        zoom={14}
+        zoom={adjustZoom(trip)}
         provider={osm}
       >
         <ZoomControl />

@@ -199,9 +199,17 @@ export const mapDataSlice = createSlice({
     },
     updateAddress: (state, param) => {
       if (param.payload.idx === 0) {
-        state.suggestions.start.value = param.payload;
+        if (param.payload.address === null) {
+          state.suggestions.start.value = null;
+        } else {
+          state.suggestions.start.value = param.payload;
+        }
       } else {
-        state.suggestions.destination.value = param.payload;
+        if (param.payload.address === null) {
+          state.suggestions.destination.value = null;
+        } else {
+          state.suggestions.destination.value = param.payload;
+        }
       }
       console.log(param, "params", state);
     },
