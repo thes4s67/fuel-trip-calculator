@@ -8,6 +8,7 @@ import {
   Tabs,
   Tab,
   styled,
+  CircularProgress,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -17,6 +18,7 @@ import {
   getOptionModels,
   getOptionTrims,
   getSelectionData,
+  getIPData,
 } from "../src/store/slices/mapDataSlice";
 import { baseUrl } from "../src/utils/API";
 import TripMap from "../src/components/TripMap";
@@ -111,17 +113,20 @@ const TabsContainerWrapper = styled(Box)(
   `
 );
 
-const Home = ({ data, ipData }) => {
+const Home = ({ data }) => {
   const selection = useSelector((state) => state.mapData.selection);
   const tripData = useSelector((state) => state.mapData.trip);
-  const suggestions = useSelector((state) => state.mapData.suggestions);
-
   const fuelData = useSelector((state) => state.mapData.fuelData);
   const loading = useSelector((state) => state.mapData.loading);
+  const ipData = useSelector((state) => state.mapData.suggestions.default);
 
   const [currTab, setCurrTab] = useState("overview");
   const dispatch = useDispatch();
   useEffect(() => {
+    console.log("rendered");
+    if (ipData.ipAddress === null) {
+      dispatch(getIPData());
+    }
     //Get Makes
     if (
       selection.year.value !== null &&
@@ -167,7 +172,7 @@ const Home = ({ data, ipData }) => {
         })
       );
     }
-  }, [selection]);
+  }, [ipData, selection]);
 
   const tabs = [
     { value: "overview", label: "Overview" },
@@ -188,11 +193,23 @@ const Home = ({ data, ipData }) => {
           <VehicleSelector yearOptions={data} />
         </Grid>
         <Grid item xs={12} md={5}>
-          <AddressSelector ipData={ipData} />
+          {ipData.long ? (
+            <AddressSelector />
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress color="inherit" size={50} sx={{ mt: 5 }} />
+            </Box>
+          )}
         </Grid>
         <Grid item xs={12} md={7}>
           <Box sx={{ justifyContent: "center" }}>
-            <TripMap ipData={ipData} />
+            <TripMap />
           </Box>
         </Grid>
         {loading ? (
@@ -244,9 +261,7 @@ export const getServerSideProps = async (context) => {
     type: "years",
   });
   const { data } = await res.data;
-  const ipRes = await axios.get(`https://www.iplocate.io/api/lookup/`);
-  const ipData = await ipRes.data;
   return {
-    props: { data, ipData },
+    props: { data },
   };
 };

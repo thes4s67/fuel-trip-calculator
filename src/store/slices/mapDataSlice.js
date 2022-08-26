@@ -3,6 +3,17 @@ import axios from "axios";
 import { baseUrl } from "../../utils/API";
 import { getFuelType, getAdjMPG } from "../../utils";
 
+export const getIPData = createAsyncThunk(
+  "mapData/getIPData",
+  async (arg, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`https://www.iplocate.io/api/lookup/`);
+      return data;
+    } catch (err) {
+      rejectWithValue(err.response.data);
+    }
+  }
+);
 export const getSuggestionData = createAsyncThunk(
   "mapData/getSuggestionData",
   async (arg, { rejectWithValue }) => {
@@ -375,6 +386,13 @@ export const mapDataSlice = createSlice({
       }
     },
     [getSuggestionData.rejected]: (state, { payload }) => {},
+    [getIPData.fulfilled]: (state, { payload }) => {
+      state.suggestions.default = {
+        long: payload.longitude,
+        lat: payload.latitude,
+        ipAddress: payload.ip,
+      };
+    },
   },
 });
 

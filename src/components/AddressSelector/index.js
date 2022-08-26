@@ -24,7 +24,7 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 import CloseIcon from "@mui/icons-material/Close";
 import _ from "lodash";
 
-const AddressSelector = ({ ipData }) => {
+const AddressSelector = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -94,8 +94,8 @@ const AddressSelector = ({ ipData }) => {
       getSuggestionData({
         address: e.target.value,
         idx,
-        long: ipData.longitude,
-        lat: ipData.latitude,
+        long: suggestions.default.long,
+        lat: suggestions.default.lat,
       })
     );
   };
