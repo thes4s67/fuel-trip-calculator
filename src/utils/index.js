@@ -27,7 +27,7 @@ export const getFuelCost = (distance, combined, avg) => {
 export const getPumpCount = (tankStart, tankSize, distance, mpg) => {
   const gals = distance / mpg;
   let refuel = 0;
-  if (tankStart > 0) refuel = gals / (tankStart * tankSize);
+  if (tankStart > 0.25) refuel = gals / (tankStart * tankSize);
   else refuel = gals / tankSize + 1;
   return refuel > 1
     ? `you can expect to pump fuel at least ${Math.round(refuel)} ${

@@ -8,7 +8,6 @@ import {
   Tabs,
   Tab,
   styled,
-  useTheme,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -18,7 +17,6 @@ import {
   getOptionModels,
   getOptionTrims,
   getSelectionData,
-  getIPAddress,
 } from "../src/store/slices/mapDataSlice";
 import { baseUrl } from "../src/utils/API";
 import TripMap from "../src/components/TripMap";
@@ -113,7 +111,7 @@ const TabsContainerWrapper = styled(Box)(
   `
 );
 
-const Home = ({ data }) => {
+const Home = ({ data, ipData }) => {
   const selection = useSelector((state) => state.mapData.selection);
   const tripData = useSelector((state) => state.mapData.trip);
   const suggestions = useSelector((state) => state.mapData.suggestions);
@@ -124,9 +122,6 @@ const Home = ({ data }) => {
   const [currTab, setCurrTab] = useState("overview");
   const dispatch = useDispatch();
   useEffect(() => {
-    if (suggestions.default.ipAddress === null) {
-      dispatch(getIPAddress());
-    }
     //Get Makes
     if (
       selection.year.value !== null &&
@@ -172,7 +167,7 @@ const Home = ({ data }) => {
         })
       );
     }
-  }, [selection, suggestions.default]);
+  }, [selection]);
 
   const tabs = [
     { value: "overview", label: "Overview" },
@@ -193,11 +188,11 @@ const Home = ({ data }) => {
           <VehicleSelector yearOptions={data} />
         </Grid>
         <Grid item xs={12} md={5}>
-          <AddressSelector />
+          <AddressSelector ipData={ipData} />
         </Grid>
         <Grid item xs={12} md={7}>
           <Box sx={{ justifyContent: "center" }}>
-            <TripMap />
+            <TripMap ipData={ipData} />
           </Box>
         </Grid>
         {loading ? (
@@ -249,7 +244,9 @@ export const getServerSideProps = async (context) => {
     type: "years",
   });
   const { data } = await res.data;
+  const ipRes = await axios.get(`https://www.iplocate.io/api/lookup/`);
+  const ipData = await ipRes.data;
   return {
-    props: { data },
+    props: { data, ipData },
   };
 };

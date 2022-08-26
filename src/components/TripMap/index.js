@@ -6,7 +6,7 @@ import Lines from "../Map/Lines";
 import { useSelector } from "react-redux";
 import { adjustZoom } from "../../utils";
 
-const TripMap = () => {
+const TripMap = ({ ipData }) => {
   const path = useSelector((state) => state.mapData.trip.path);
   const addresses = useSelector((state) => state.mapData.suggestions);
   const trip = useSelector((state) => state.mapData.trip);
@@ -20,7 +20,7 @@ const TripMap = () => {
                 addresses.start.value.coordinates[1],
                 addresses.start.value.coordinates[0],
               ]
-            : [addresses.default.lat, addresses.default.long]
+            : [ipData.latitude, ipData.longitude]
         }
         zoom={adjustZoom(trip)}
         provider={osm}

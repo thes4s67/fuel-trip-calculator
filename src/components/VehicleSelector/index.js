@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import {
   Box,
   Card,
+  Grid,
   CardActions,
   CardContent,
   Typography,
@@ -95,43 +96,41 @@ const VehicleSelector = ({ yearOptions }) => {
             Select Your Vehicle
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-          <SelectBox
-            type={"year"}
-            label={"Year"}
-            width={120}
-            options={yearOptions}
-          />
-          <SelectBox
-            type={"make"}
-            label={"Make"}
-            width={220}
-            options={selectOptions.makes}
-          />
-          <SelectBox
-            type={"model"}
-            label={"Model"}
-            width={300}
-            options={selectOptions.models}
-          />
-          <SelectBox
-            type={"trim"}
-            label={"Trim"}
-            width={320}
-            options={selectOptions.trims}
-          />
-        </Box>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={2}>
+            <SelectBox
+              type={"year"}
+              label={"Year"}
+              width={120}
+              options={yearOptions}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <SelectBox
+              type={"make"}
+              label={"Make"}
+              width={220}
+              options={selectOptions.makes}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <SelectBox
+              type={"model"}
+              label={"Model"}
+              width={300}
+              options={selectOptions.models}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <SelectBox
+              type={"trim"}
+              label={"Trim"}
+              width={320}
+              options={selectOptions.trims}
+            />
+          </Grid>
+        </Grid>
       </CardContent>
-      {/* <Typography
-        variant="subtitle2"
-        sx={{
-          mb: 3,
-          fontSize: `${theme.typography.pxToRem(14)}`,
-        }}
-      >
-        You can build unlimited layout styles using any of the 500+ included
-        components and elements...
-      </Typography> */}
       {(selection.trim.value !== null && selection.model.value !== null) ||
       (!selection.trim.disabled && selectOptions.trims.length == 0) ||
       selection.trim.value !== null ? (

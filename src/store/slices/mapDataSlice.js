@@ -3,22 +3,10 @@ import axios from "axios";
 import { baseUrl } from "../../utils/API";
 import { getFuelType, getAdjMPG } from "../../utils";
 
-export const getIPAddress = createAsyncThunk(
-  "mapData/getIPAddress",
-  async (arg, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(`https://www.iplocate.io/api/lookup/`);
-      return data;
-    } catch (err) {
-      rejectWithValue(err.response.data);
-    }
-  }
-);
 export const getSuggestionData = createAsyncThunk(
   "mapData/getSuggestionData",
   async (arg, { rejectWithValue }) => {
     try {
-      console.log(arg, "args suggestionData");
       const { data } = await axios.post(`${baseUrl}/api/suggest`, {
         address: arg.address,
         idx: arg.idx,
@@ -207,11 +195,11 @@ export const mapDataSlice = createSlice({
       } else {
         if (param.payload.address === null) {
           state.suggestions.destination.value = null;
+          state.trip.path = [];
         } else {
           state.suggestions.destination.value = param.payload;
         }
       }
-      console.log(param, "params", state);
     },
     updateSelection: (state, param) => {
       switch (param.payload.type) {
@@ -352,15 +340,15 @@ export const mapDataSlice = createSlice({
       }
     },
     [getSuggestionData.fulfilled]: (state, { payload }) => {
-      console.log(payload, "suggestionData payload");
       if (payload.idx === 0) {
         state.suggestions = {
           ...state.suggestions,
           start: {
             ...state.suggestions.start,
             loading: false,
-            suggestion: payload.data.features.map((c) => {
+            suggestion: payload.data.features.map((c, i) => {
               return {
+                key: `start-${i}`,
                 label: c.properties.label,
                 region: c.properties.region,
                 coordinates: c.geometry.coordinates,
@@ -374,8 +362,9 @@ export const mapDataSlice = createSlice({
           destination: {
             ...state.suggestions.destination,
             loading: false,
-            suggestion: payload.data.features.map((c) => {
+            suggestion: payload.data.features.map((c, i) => {
               return {
+                key: `dest-${i}`,
                 label: `${c.properties.label}`,
                 coordinates: c.geometry.coordinates,
                 region: c.properties.region,
@@ -385,21 +374,7 @@ export const mapDataSlice = createSlice({
         };
       }
     },
-    [getSuggestionData.rejected]: (state, { payload }) => {
-      console.log("something bad happened on address suggestion");
-    },
-    [getIPAddress.pending]: (state, { meta }) => {},
-    [getIPAddress.fulfilled]: (state, { payload }) => {
-      state.suggestions.default = {
-        long: payload.longitude,
-        lat: payload.latitude,
-        ipAddress: payload.ipAddress,
-      };
-    },
-    [getIPAddress.rejected]: (state, { meta }) => {
-      //do something /w state
-      console.log(meta, "rejected ip address");
-    },
+    [getSuggestionData.rejected]: (state, { payload }) => {},
   },
 });
 

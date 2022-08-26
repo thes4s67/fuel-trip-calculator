@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   Box,
   Card,
@@ -24,7 +24,7 @@ import DirectionsIcon from "@mui/icons-material/Directions";
 import CloseIcon from "@mui/icons-material/Close";
 import _ from "lodash";
 
-const AddressSelector = () => {
+const AddressSelector = ({ ipData }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -90,13 +90,12 @@ const AddressSelector = () => {
   };
 
   const handleAddressChange = async (e, idx) => {
-    console.log(idx, suggestions.default.long, suggestions.default.lat);
     dispatch(
       getSuggestionData({
         address: e.target.value,
         idx,
-        long: suggestions.default.long,
-        lat: suggestions.default.lat,
+        long: ipData.longitude,
+        lat: ipData.latitude,
       })
     );
   };

@@ -65,7 +65,6 @@ const handler = async (req, res) => {
         },
       });
     } catch (err) {
-      console.log(err);
       res.status(403).json({ error: "unable to retrieve gas prices" });
     }
   } else {

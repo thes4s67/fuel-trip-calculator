@@ -1,6 +1,5 @@
 import { selectQuery } from "../../../src/database";
 
-//TODO: paramertize the sql queries!! prevent sql exceptions /w try catch?
 const handler = async (req, res) => {
   if (req.method === "POST") {
     const type = req.body.type;
