@@ -1,4 +1,4 @@
-React NextJS app that calculates the fuel cost for your next trip based on the selected vehicle.
+React NextJS app that calculates the fuel cost for your next trip based on the selected vehicle. Note: vehicle, trip, and fuel data is based in US.
 
 ## Demo
 
