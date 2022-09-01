@@ -11,6 +11,7 @@ This project uses the following libraries/services:
 - [pg](https://node-postgres.com/) - for Postgres DB connection
 - [supabase](https://supabase.com/) - for free Postgres DB!
 - [MUI](https://mui.com/)
+- react-redux
 
 ## Installation
 
