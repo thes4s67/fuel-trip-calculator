@@ -1,22 +1,3 @@
-// import Database from "better-sqlite3";
-// //TODO: review this
-// const db = new Database("../app/src/database/database.db");
-
-// export const selectData = async (query) => {
-//   return await new Promise((resolve, reject) => {
-//     try {
-//       let output = [];
-//       const sql = db.prepare(query);
-//       for (let row of sql.iterate()) {
-//         output.push(row);
-//       }
-//       resolve(output);
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// };
-
 import { Client } from "pg";
 import dotenv from "dotenv";
 
@@ -30,9 +11,9 @@ const client = new Client({
 });
 client.connect();
 
-export const selectQuery = (query) => {
+export const selectQuery = (query, values) => {
   return new Promise((resolve, reject) => {
-    client.query({ rowMdoe: "array", text: query }, (err, res) => {
+    client.query(query, values, (err, res) => {
       if (err) return reject(err);
       return resolve(res.rows);
     });

@@ -18,9 +18,9 @@ const handler = async (req, res) => {
         });
         break;
       case "makes":
-        data = await selectQuery(
-          `select * from makes where year = ${req.body.year}`
-        );
+        data = await selectQuery(`select * from makes where year = $1`, [
+          req.body.year,
+        ]);
         res.status(200).json({
           success: true,
           type: "makes",
@@ -33,7 +33,8 @@ const handler = async (req, res) => {
         break;
       case "models":
         data = await selectQuery(
-          `select * from models where year = ${req.body.year} and make = '${req.body.make}'`
+          `select * from models where year = $1 and make = $2`,
+          [req.body.year, req.body.make]
         );
         res.status(200).json({
           success: true,
@@ -47,7 +48,8 @@ const handler = async (req, res) => {
         break;
       case "trims":
         data = await selectQuery(
-          `select * from trims where year = ${req.body.year} and make = '${req.body.make}' and model = '${req.body.model}'`
+          `select * from trims where year = $1 and make = $2 and model = $3`,
+          [req.body.year, req.body.make, req.body.model]
         );
         res.status(200).json({
           success: true,
@@ -61,7 +63,8 @@ const handler = async (req, res) => {
         break;
       case "sData":
         data = await selectQuery(
-          `select year, make, model, trim, city08, highway08, comb08, fuel_type, fuel_tank_size, thumbnail from model_specs where year = ${req.body.year} and make = '${req.body.make}' and model = '${req.body.model}' and trim = '${req.body.trim}';`
+          `select year, make, model, trim, city08, highway08, comb08, fuel_type, fuel_tank_size, thumbnail from model_specs where year = $1 and make = $2 and model = $3 and trim = $4;`,
+          [req.body.year, req.body.make, req.body.model, req.body.trim]
         );
         res.status(200).json({
           success: true,
