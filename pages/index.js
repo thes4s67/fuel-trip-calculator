@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,26 +10,19 @@ import {
   styled,
   CircularProgress,
 } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import _ from "lodash";
-import {
-  getOptionMakes,
-  getOptionModels,
-  getOptionTrims,
-  getSelectionData,
-  getIPData,
-} from "../src/store/slices/mapDataSlice";
 import { baseUrl } from "../src/utils/API";
 import TripMap from "../src/components/TripMap";
 import Directions from "../src/components/Directions";
 import VehicleSelector from "../src/components/VehicleSelector";
-
 import AddressSelector from "../src/components/AddressSelector";
 import Loading from "../src/components/Loading";
 import Footer from "../src/components/Footer";
 import Logo from "../src/components/Logo";
 import TripDetails from "../src/components/TripDetails";
+import { useVehicleSelection } from "../src/hooks/useVehicleSelection";
 
 const TabsContainerWrapper = styled(Box)(
   ({ theme }) => `
@@ -113,71 +106,18 @@ const TabsContainerWrapper = styled(Box)(
   `
 );
 
+const tabs = [
+  { value: "overview", label: "Overview" },
+  { value: "directions", label: "Directions" },
+];
+
 const Home = ({ data }) => {
-  const selection = useSelector((state) => state.mapData.selection);
   const tripData = useSelector((state) => state.mapData.trip);
   const fuelData = useSelector((state) => state.mapData.fuelData);
   const loading = useSelector((state) => state.mapData.loading);
   const ipData = useSelector((state) => state.mapData.suggestions.default);
-
+  const vehicleSection = useVehicleSelection();
   const [currTab, setCurrTab] = useState("overview");
-  const dispatch = useDispatch();
-  useEffect(() => {
-    console.log("rendered");
-    if (ipData.ipAddress === null) {
-      dispatch(getIPData());
-    }
-    //Get Makes
-    if (
-      selection.year.value !== null &&
-      !selection.make.disabled &&
-      selection.model.disabled
-    ) {
-      dispatch(getOptionMakes({ type: "makes", year: selection.year.value }));
-    }
-    //Get Models
-    if (
-      selection.make.value !== null &&
-      !selection.model.disabled &&
-      selection.trim.disabled
-    ) {
-      dispatch(
-        getOptionModels({
-          type: "models",
-          year: selection.year.value,
-          make: selection.make.value,
-        })
-      );
-    }
-    //Get Trims
-    if (selection.model.value !== null && !selection.trim.disabled) {
-      dispatch(
-        getOptionTrims({
-          type: "trims",
-          year: selection.year.value,
-          make: selection.make.value,
-          model: selection.model.value,
-        })
-      );
-    }
-    //Once trim is selected
-    if (selection.trim.value !== null) {
-      dispatch(
-        getSelectionData({
-          type: "sData",
-          year: selection.year.value,
-          make: selection.make.value,
-          model: selection.model.value,
-          trim: selection.trim.value,
-        })
-      );
-    }
-  }, [ipData, selection]);
-
-  const tabs = [
-    { value: "overview", label: "Overview" },
-    { value: "directions", label: "Directions" },
-  ];
 
   const handleTabChange = (_event, value) => {
     setCurrTab(value);
