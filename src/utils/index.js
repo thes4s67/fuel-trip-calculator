@@ -16,7 +16,7 @@ export const getAdjMPG = (city, highway, cityPercent) => {
 export const formatDuration = (duration) => {
   const d = moment.duration(duration, "seconds");
   const hh =
-    d._data.days > 0 ? d._data.days * 24 + d_.data.hours : d._data.hours;
+    d._data.days > 0 ? d._data.days * 24 + d._data.hours : d._data.hours;
   return `${hh} hours, ${d._data.minutes} minutes`;
 };
 
